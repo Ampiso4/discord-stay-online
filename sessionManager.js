@@ -28,7 +28,6 @@ class SessionManager {
       } else {
         // Create new user
         const newUser = await this.db.createUser(sessionId);
-        console.log(`New user created with session ID: ${sessionId}`);
         return {
           id: newUser.id,
           session_id: sessionId,

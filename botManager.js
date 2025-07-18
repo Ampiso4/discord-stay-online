@@ -28,11 +28,8 @@ class BotManager {
         lastError: null,
       });
 
-      console.log(`Bot ${botId}: Connecting to Discord...`);
-
       // Event handlers
       bot.on("connect", async () => {
-        console.log(`Bot ${botId}: Connected to Discord`);
         await this.updateBotStatus(botId, userId, "online", null);
         await this.addConnectionHistory(
           botId,
@@ -62,10 +59,6 @@ class BotManager {
       });
 
       bot.on("disconnect", async (err) => {
-        console.log(
-          `Bot ${botId} disconnected`,
-          err ? `with error: ${err.message}` : ""
-        );
         await this.updateBotStatus(
           botId,
           userId,
@@ -348,7 +341,6 @@ class BotManager {
       const dbBots = await this.db.getBotsByUserId(userId);
       // For now, we won't automatically restart bots on server restart
       // This could be implemented later if needed
-      console.log(`Found ${dbBots.length} bots for user ${userId}`);
       return dbBots;
     } catch (error) {
       console.error(`Error loading bots for user ${userId}:`, error);

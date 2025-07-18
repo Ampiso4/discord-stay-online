@@ -46,22 +46,14 @@ app.use(express.static("public"));
 
 // Socket.IO connection handling with user isolation
 io.on("connection", (socket) => {
-  console.log("Client connected:", socket.id);
-
   // Handle user session for socket
   socket.on("joinUserRoom", async (sessionId) => {
     try {
-      console.log(
-        `Socket ${socket.id} attempting to join user room with session:`,
-        sessionId
-      );
       const user = await sessionManager.validateSession(sessionId);
       if (user) {
         socket.userId = user.id;
         socket.sessionId = sessionId;
         socket.join(`user_${user.id}`);
-
-        console.log(`Socket ${socket.id} joined user room for user ${user.id}`);
 
         // Send current bot status to this user only
         const bots = await botManager.getAllBots(user.id);
@@ -71,7 +63,6 @@ io.on("connection", (socket) => {
         socket.emit("statsUpdate", stats);
         socket.emit("joinedUserRoom", { userId: user.id, sessionId });
       } else {
-        console.log(`Invalid session for socket ${socket.id}:`, sessionId);
         socket.emit("joinUserRoomError", "Invalid session");
       }
     } catch (error) {
@@ -81,7 +72,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log("Client disconnected:", socket.id);
+    // Client disconnected
   });
 });
 
@@ -90,11 +81,6 @@ async function broadcastUserUpdate(userId) {
   try {
     const bots = await botManager.getAllBots(userId);
     const stats = await botManager.getUserStats(userId);
-
-    console.log(`Broadcasting to user ${userId}:`, {
-      botsCount: bots.length,
-      stats,
-    });
 
     io.to(`user_${userId}`).emit("botsUpdate", bots);
     io.to(`user_${userId}`).emit("statsUpdate", stats);
@@ -159,8 +145,6 @@ app.post(
         async (error, data) => {
           if (error) {
             console.error(`Bot ${data.botId} error:`, error);
-          } else {
-            console.log(`Bot ${data.botId} status:`, data.status);
           }
           await broadcastUserUpdate(req.user.id);
         }
