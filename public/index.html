@@ -10,57 +10,197 @@
 </head>
 
 <body>
-    <div class="container">
-        <header>
-            <h1>🤖 Discord Stay Online</h1>
-            <p>Manage multiple Discord bot connections with ease</p>
-        </header>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1>Discord Stay Online</h1>
+                <p class="sidebar-subtitle">Control Panel</p>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <span>☰</span>
+                </button>
+            </div>
 
-        <div class="stats-section">
-            <div class="stat-card">
-                <div class="stat-value" id="totalBots">0</div>
-                <div class="stat-label">Total Bots</div>
-            </div>
-            <div class="stat-card online">
-                <div class="stat-value" id="onlineBots">0</div>
-                <div class="stat-label">Online</div>
-            </div>
-            <div class="stat-card offline">
-                <div class="stat-value" id="offlineBots">0</div>
-                <div class="stat-label">Offline</div>
-            </div>
-            <div class="stat-card connecting">
-                <div class="stat-value" id="connectingBots">0</div>
-                <div class="stat-label">Connecting</div>
-            </div>
-        </div>
-
-        <div class="add-bot-section">
-            <h2>Add New Bot</h2>
-            <form id="addBotForm">
-                <div class="form-group">
-                    <label for="tokenInput">Discord Token:</label>
-                    <input type="password" id="tokenInput" placeholder="Enter Discord user token..." required>
-                    <button type="button" id="toggleToken" title="Show/Hide Token">👁️</button>
+            <nav class="sidebar-nav">
+                <div class="nav-item active" data-section="dashboard">
+                    <span class="nav-item-icon">📊</span>
+                    <span class="nav-item-text">Dashboard</span>
                 </div>
-                <button type="submit" id="addBotBtn">Add Bot</button>
-            </form>
-        </div>
-
-        <div class="bots-section">
-            <h2>Active Bots</h2>
-            <div id="botsContainer">
-                <div class="no-bots">
-                    <p>No bots added yet. Add your first bot using the form above.</p>
+                <div class="nav-item" data-section="bots">
+                    <span class="nav-item-icon">🤖</span>
+                    <span class="nav-item-text">Bots</span>
                 </div>
-            </div>
-        </div>
+                <div class="nav-item" data-section="add-bot">
+                    <span class="nav-item-icon">➕</span>
+                    <span class="nav-item-text">Add Bot</span>
+                </div>
+                <div class="nav-item" data-section="settings">
+                    <span class="nav-item-icon">⚙️</span>
+                    <span class="nav-item-text">Settings</span>
+                </div>
+            </nav>
+        </aside>
 
-        <div class="footer">
-            <p>⚠️ <strong>Warning:</strong> Using self-bots violates Discord's Terms of Service. Use at your own risk.
-            </p>
-            <p>Made with ❤️ for educational purposes</p>
-        </div>
+        <!-- Main Content -->
+        <main class="main-content" id="mainContent">
+            <!-- Mobile Header -->
+            <div class="mobile-header" id="mobileHeader" style="display: none;">
+                <div>
+                    <h1 style="font-size: 1.5rem; margin: 0;">Discord Stay Online</h1>
+                    <p style="margin: 0; color: var(--text-secondary); font-size: 0.9rem;">Control Panel</p>
+                </div>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <span>☰</span>
+                </button>
+            </div>
+
+            <!-- Dashboard Section -->
+            <section class="content-section" id="dashboard-section">
+                <div class="content-header">
+                    <div>
+                        <h1 class="header-title">Dashboard</h1>
+                        <p class="header-subtitle">Monitor your Discord bot connections</p>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalBots">0</div>
+                        <div class="stat-label">Total Bots</div>
+                    </div>
+                    <div class="stat-card online">
+                        <div class="stat-value" id="onlineBots">0</div>
+                        <div class="stat-label">Online</div>
+                    </div>
+                    <div class="stat-card offline">
+                        <div class="stat-value" id="offlineBots">0</div>
+                        <div class="stat-label">Offline</div>
+                    </div>
+                    <div class="stat-card connecting">
+                        <div class="stat-value" id="connectingBots">0</div>
+                        <div class="stat-label">Connecting</div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="add-bot-section">
+                    <h2 class="section-title">Quick Actions</h2>
+                    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                        <button class="btn-primary" onclick="showSection('add-bot')">
+                            <span style="margin-right: 8px;">🤖</span>
+                            Add New Bot
+                        </button>
+                        <button class="btn-secondary" onclick="refreshData()">
+                            <span style="margin-right: 8px;">🔄</span>
+                            Refresh Data
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Add Bot Section -->
+            <section class="content-section" id="add-bot-section" style="display: none;">
+                <div class="content-header">
+                    <div>
+                        <h1 class="header-title">Add New Bot</h1>
+                        <p class="header-subtitle">Connect a Discord token to keep it online</p>
+                    </div>
+                </div>
+
+                <div class="add-bot-section">
+                    <form id="addBotForm">
+                        <div class="form-group">
+                            <label for="tokenInput" class="form-label">Discord Token</label>
+                            <div class="form-input-container">
+                                <input type="password" id="tokenInput" class="form-input"
+                                    placeholder="Enter Discord user token..." required>
+                                <button type="button" class="toggle-password" id="toggleToken">
+                                    <span>👁️</span>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary" id="addBotBtn">
+                            <span style="margin-right: 8px;">➕</span>
+                            Add Bot
+                        </button>
+                    </form>
+                </div>
+
+                <div class="add-bot-section" style="margin-top: 24px;">
+                    <h3 class="section-title" style="font-size: 1.2rem;">📝 How to get Discord Token</h3>
+                    <div style="color: var(--text-secondary); line-height: 1.6;">
+                        <ol style="margin-left: 20px;">
+                            <li>Open Discord in your web browser</li>
+                            <li>Press <kbd
+                                    style="background: var(--surface-elevated); padding: 2px 6px; border-radius: 4px;">F12</kbd>
+                                to open Developer Tools</li>
+                            <li>Go to the <strong>Network</strong> tab</li>
+                            <li>Interact with Discord (click on a server or channel)</li>
+                            <li>Find a request and look for <strong>"authorization"</strong> in the request headers</li>
+                            <li>Copy the token (it starts with your user ID)</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bots Section -->
+            <section class="content-section" id="bots-section" style="display: none;">
+                <div class="content-header">
+                    <div>
+                        <h1 class="header-title">Active Bots</h1>
+                        <p class="header-subtitle">Manage your connected Discord bots</p>
+                    </div>
+                </div>
+
+                <div class="bots-section">
+                    <div class="bots-grid" id="botsContainer">
+                        <div class="no-bots">
+                            <p>No bots added yet. Add your first bot using the Add Bot section.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section class="content-section" id="settings-section" style="display: none;">
+                <div class="content-header">
+                    <div>
+                        <h1 class="header-title">Settings</h1>
+                        <p class="header-subtitle">Configure your preferences</p>
+                    </div>
+                </div>
+
+                <div class="add-bot-section">
+                    <h3 class="section-title">🎨 Theme Settings</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 16px;">Currently using Cyberpunk Neon theme
+                    </p>
+
+                    <h3 class="section-title" style="margin-top: 32px;">📊 Statistics</h3>
+                    <div class="bot-info" style="margin-top: 16px;">
+                        <div class="bot-info-item">
+                            <div class="bot-info-label">Session ID</div>
+                            <div class="bot-info-value" id="sessionId">Loading...</div>
+                        </div>
+                        <div class="bot-info-item">
+                            <div class="bot-info-label">User ID</div>
+                            <div class="bot-info-value" id="userId">Loading...</div>
+                        </div>
+                        <div class="bot-info-item">
+                            <div class="bot-info-label">Connection Status</div>
+                            <div class="bot-info-value" id="connectionStatus">Connected</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p>⚠️ <strong>Warning:</strong> Using self-bots violates Discord's Terms of Service. Use at your own
+                    risk.</p>
+                <p>Made with ❤️ for educational purposes</p>
+            </div>
+        </main>
     </div>
 
     <!-- Toast notification -->
