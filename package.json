@@ -1,14 +1,20 @@
 {
   "name": "discord-online-forever-main",
-  "version": "1.0.0",
-  "description": "Keep ypou Discord profile online forever",
-  "main": "index.js",
+  "version": "2.0.0",
+  "description": "Keep your Discord profile online forever with web UI",
+  "main": "server.js",
   "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "eris": "^0.17.2"
+    "eris": "^0.17.2",
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2"
   }
 }

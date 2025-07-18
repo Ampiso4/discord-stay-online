@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Stay Online - Control Panel</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 Discord Stay Online</h1>
+            <p>Manage multiple Discord bot connections with ease</p>
+        </header>
+
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-value" id="totalBots">0</div>
+                <div class="stat-label">Total Bots</div>
+            </div>
+            <div class="stat-card online">
+                <div class="stat-value" id="onlineBots">0</div>
+                <div class="stat-label">Online</div>
+            </div>
+            <div class="stat-card offline">
+                <div class="stat-value" id="offlineBots">0</div>
+                <div class="stat-label">Offline</div>
+            </div>
+            <div class="stat-card connecting">
+                <div class="stat-value" id="connectingBots">0</div>
+                <div class="stat-label">Connecting</div>
+            </div>
+            <div class="stat-card error">
+                <div class="stat-value" id="errorBots">0</div>
+                <div class="stat-label">Error</div>
+            </div>
+        </div>
+
+        <div class="add-bot-section">
+            <h2>Add New Bot</h2>
+            <form id="addBotForm">
+                <div class="form-group">
+                    <label for="tokenInput">Discord Token:</label>
+                    <input type="password" id="tokenInput" placeholder="Enter Discord user token..." required>
+                    <button type="button" id="toggleToken" title="Show/Hide Token">👁️</button>
+                </div>
+                <button type="submit" id="addBotBtn">Add Bot</button>
+            </form>
+        </div>
+
+        <div class="bots-section">
+            <h2>Active Bots</h2>
+            <div id="botsContainer">
+                <div class="no-bots">
+                    <p>No bots added yet. Add your first bot using the form above.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>⚠️ <strong>Warning:</strong> Using self-bots violates Discord's Terms of Service. Use at your own risk.
+            </p>
+            <p>Made with ❤️ for educational purposes</p>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
