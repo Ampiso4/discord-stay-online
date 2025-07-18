@@ -18,6 +18,7 @@ const connectingBotsElement = document.getElementById("connectingBots");
 // State
 let bots = [];
 let stats = { online: 0, offline: 0, connecting: 0 };
+let userSession = null;
 
 // Initialize the application
 document.addEventListener("DOMContentLoaded", function () {
@@ -55,6 +56,13 @@ async function loadInitialData() {
     if (data.success) {
       bots = data.bots;
       stats = data.stats;
+      userSession = data.sessionInfo;
+
+      // Join user-specific WebSocket room
+      if (userSession && userSession.sessionId) {
+        socket.emit("joinUserRoom", userSession.sessionId);
+      }
+
       updateUI();
     }
   } catch (error) {
