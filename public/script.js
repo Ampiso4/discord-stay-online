@@ -40,10 +40,23 @@ function initializeEventListeners() {
   socket.on("connect", () => {
     console.log("Connected to server");
     showToast("Connected to server", "success");
+    // Re-join user room if we have session info
+    if (userSession && userSession.sessionId) {
+      console.log("Re-joining user room:", userSession.sessionId);
+      socket.emit("joinUserRoom", userSession.sessionId);
+    }
   });
   socket.on("disconnect", () => {
     console.log("Disconnected from server");
     showToast("Disconnected from server", "error");
+  });
+  socket.on("joinedUserRoom", (data) => {
+    console.log("Successfully joined user room:", data);
+    showToast(`Connected to user session`, "success");
+  });
+  socket.on("joinUserRoomError", (error) => {
+    console.error("Failed to join user room:", error);
+    showToast(`Session error: ${error}`, "error");
   });
 }
 

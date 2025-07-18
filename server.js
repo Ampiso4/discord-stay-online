@@ -51,11 +51,17 @@ io.on("connection", (socket) => {
   // Handle user session for socket
   socket.on("joinUserRoom", async (sessionId) => {
     try {
+      console.log(
+        `Socket ${socket.id} attempting to join user room with session:`,
+        sessionId
+      );
       const user = await sessionManager.validateSession(sessionId);
       if (user) {
         socket.userId = user.id;
         socket.sessionId = sessionId;
         socket.join(`user_${user.id}`);
+
+        console.log(`Socket ${socket.id} joined user room for user ${user.id}`);
 
         // Send current bot status to this user only
         const bots = await botManager.getAllBots(user.id);
@@ -63,9 +69,14 @@ io.on("connection", (socket) => {
 
         socket.emit("botsUpdate", bots);
         socket.emit("statsUpdate", stats);
+        socket.emit("joinedUserRoom", { userId: user.id, sessionId });
+      } else {
+        console.log(`Invalid session for socket ${socket.id}:`, sessionId);
+        socket.emit("joinUserRoomError", "Invalid session");
       }
     } catch (error) {
       console.error("Error joining user room:", error);
+      socket.emit("joinUserRoomError", error.message);
     }
   });
 
@@ -75,9 +86,21 @@ io.on("connection", (socket) => {
 });
 
 // Broadcast updates to specific user
-function broadcastUserUpdate(userId) {
-  io.to(`user_${userId}`).emit("botsUpdate", botManager.getAllBots(userId));
-  io.to(`user_${userId}`).emit("statsUpdate", botManager.getUserStats(userId));
+async function broadcastUserUpdate(userId) {
+  try {
+    const bots = await botManager.getAllBots(userId);
+    const stats = await botManager.getUserStats(userId);
+
+    console.log(`Broadcasting to user ${userId}:`, {
+      botsCount: bots.length,
+      stats,
+    });
+
+    io.to(`user_${userId}`).emit("botsUpdate", bots);
+    io.to(`user_${userId}`).emit("statsUpdate", stats);
+  } catch (error) {
+    console.error(`Error broadcasting to user ${userId}:`, error);
+  }
 }
 
 // API Routes
@@ -133,13 +156,13 @@ app.post(
       const result = await botManager.addBot(
         req.user.id,
         token,
-        (error, data) => {
+        async (error, data) => {
           if (error) {
             console.error(`Bot ${data.botId} error:`, error);
           } else {
             console.log(`Bot ${data.botId} status:`, data.status);
           }
-          broadcastUserUpdate(req.user.id);
+          await broadcastUserUpdate(req.user.id);
         }
       );
 
@@ -149,7 +172,7 @@ app.post(
           botId: result.botId,
           message: "Bot added successfully",
         });
-        broadcastUserUpdate(req.user.id);
+        await broadcastUserUpdate(req.user.id);
       } else {
         res.status(400).json({
           success: false,
@@ -182,7 +205,7 @@ app.put(
           status: result.status,
           message: `Bot ${result.status}`,
         });
-        broadcastUserUpdate(req.user.id);
+        await broadcastUserUpdate(req.user.id);
       } else {
         res.status(404).json({
           success: false,
@@ -214,7 +237,7 @@ app.delete(
           success: true,
           message: "Bot removed successfully",
         });
-        broadcastUserUpdate(req.user.id);
+        await broadcastUserUpdate(req.user.id);
       } else {
         res.status(404).json({
           success: false,
