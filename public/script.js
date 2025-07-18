@@ -318,6 +318,15 @@ function updateStatsUI() {
   onlineBotsElement.textContent = stats.online || 0;
   offlineBotsElement.textContent = stats.offline || 0;
   connectingBotsElement.textContent = stats.connecting || 0;
+
+  // Update sidebar stats
+  const sidebarOnlineCount = document.getElementById("sidebarOnlineCount");
+  const sidebarTotalCount = document.getElementById("sidebarTotalCount");
+  const botCountBadge = document.getElementById("botCountBadge");
+
+  if (sidebarOnlineCount) sidebarOnlineCount.textContent = stats.online || 0;
+  if (sidebarTotalCount) sidebarTotalCount.textContent = total;
+  if (botCountBadge) botCountBadge.textContent = total;
 }
 
 // Update bots UI
