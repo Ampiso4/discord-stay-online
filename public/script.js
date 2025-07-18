@@ -51,8 +51,7 @@ function initializeEventListeners() {
   // Toggle token visibility
   toggleTokenBtn.addEventListener("click", toggleTokenVisibility);
 
-  // Sidebar toggle
-  sidebarToggle.addEventListener("click", toggleSidebar);
+  // Mobile menu toggle
   mobileMenuBtn.addEventListener("click", toggleMobileSidebar);
 
   // Navigation
@@ -130,26 +129,10 @@ function handleResize() {
   if (window.innerWidth <= 768) {
     // Mobile layout
     mobileHeader.style.display = "flex";
-    sidebar.classList.remove("collapsed");
-    mainContent.classList.remove("expanded");
   } else {
     // Desktop layout
     mobileHeader.style.display = "none";
     sidebar.classList.remove("open");
-  }
-}
-
-// Toggle sidebar (desktop)
-function toggleSidebar() {
-  sidebar.classList.toggle("collapsed");
-  mainContent.classList.toggle("expanded");
-
-  // Update toggle button
-  const toggleSpan = sidebarToggle.querySelector("span");
-  if (sidebar.classList.contains("collapsed")) {
-    toggleSpan.textContent = "☰";
-  } else {
-    toggleSpan.textContent = "✕";
   }
 }
 
