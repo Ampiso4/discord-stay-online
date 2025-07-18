@@ -235,10 +235,6 @@ header p {
     border-left: 5px solid #ffc107;
 }
 
-.bot-card.error {
-    border-left: 5px solid #dc3545;
-}
-
 .bot-header {
     display: flex;
     justify-content: space-between;
@@ -405,6 +401,79 @@ header p {
     background: #f8d7da;
     border-radius: 4px;
     border-left: 4px solid #dc3545;
+}
+
+.connection-history {
+    margin-top: 10px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.connection-history.expanded {
+    max-height: 200px;
+}
+
+.connection-history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 8px;
+    font-size: 11px;
+    border-bottom: 1px solid #f0f0f0;
+    background: white;
+}
+
+.connection-history-item:last-child {
+    border-bottom: none;
+}
+
+.connection-history-time {
+    color: #999;
+    font-size: 10px;
+}
+
+.connection-history-type {
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.connection-history-type.success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.connection-history-type.error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.connection-history-type.timeout {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.connection-history-type.disconnect {
+    background: #d6d8db;
+    color: #383d41;
+}
+
+.toggle-history {
+    background: none;
+    border: none;
+    color: #667eea;
+    cursor: pointer;
+    font-size: 11px;
+    margin-top: 5px;
+    padding: 2px 0;
+    text-decoration: underline;
+}
+
+.toggle-history:hover {
+    color: #5a6fd8;
 }
 
 .footer {

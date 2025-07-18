@@ -14,11 +14,10 @@ const totalBotsElement = document.getElementById("totalBots");
 const onlineBotsElement = document.getElementById("onlineBots");
 const offlineBotsElement = document.getElementById("offlineBots");
 const connectingBotsElement = document.getElementById("connectingBots");
-const errorBotsElement = document.getElementById("errorBots");
 
 // State
 let bots = [];
-let stats = { online: 0, offline: 0, connecting: 0, error: 0 };
+let stats = { online: 0, offline: 0, connecting: 0 };
 
 // Initialize the application
 document.addEventListener("DOMContentLoaded", function () {
@@ -143,7 +142,6 @@ function updateStatsUI() {
   onlineBotsElement.textContent = stats.online || 0;
   offlineBotsElement.textContent = stats.offline || 0;
   connectingBotsElement.textContent = stats.connecting || 0;
-  errorBotsElement.textContent = stats.error || 0;
 }
 
 // Update bots UI
@@ -169,6 +167,7 @@ function createBotCard(bot) {
   const createdAt = new Date(bot.createdAt).toLocaleString();
   const statusClass = bot.status;
   const isOnline = bot.status === "online";
+  const connectionHistory = bot.connectionHistory || [];
 
   return `
         <div class="bot-card ${statusClass}" data-token-id="${bot.tokenId}">
@@ -176,9 +175,9 @@ function createBotCard(bot) {
                 <div class="bot-token">${bot.tokenPreview}</div>
                 <div class="bot-status">
                     <span class="status-indicator ${statusClass}"></span>
-                    <span class="status-text ${statusClass}">${
+                    <span class="status-text ${statusClass}">${formatStatusText(
     bot.status
-  }</span>
+  )}</span>
                 </div>
                 <div class="bot-controls">
                     <button class="toggle-btn ${isOnline ? "active" : ""}" 
@@ -193,6 +192,7 @@ function createBotCard(bot) {
                     </button>
                 </div>
             </div>
+
             <div class="bot-info">
                 <div class="bot-info-item">
                     <div class="bot-info-label">Token ID</div>
@@ -204,16 +204,67 @@ function createBotCard(bot) {
                 </div>
                 <div class="bot-info-item">
                     <div class="bot-info-label">Status</div>
-                    <div class="bot-info-value">${bot.status.toUpperCase()}</div>
+                    <div class="bot-info-value">${formatStatusText(
+                      bot.status
+                    )}</div>
                 </div>
             </div>
+
             ${
               bot.lastError
                 ? `<div class="error-message">Error: ${bot.lastError}</div>`
                 : ""
             }
+            
+            ${
+              connectionHistory.length > 0
+                ? createConnectionHistory(connectionHistory, bot.tokenId)
+                : ""
+            }
         </div>
     `;
+}
+
+// Format status text for display
+function formatStatusText(status) {
+  const statusMap = {
+    online: "Online",
+    offline: "Offline",
+    connecting: "Connecting...",
+  };
+  return statusMap[status] || status;
+}
+
+// Create connection history display
+function createConnectionHistory(history, tokenId) {
+  const recentHistory = history.slice(-5).reverse(); // Show last 5 entries
+
+  return `
+    <div class="connection-history-container">
+      <button class="toggle-history" onclick="toggleConnectionHistory(${tokenId})">
+        Show Connection History (${history.length})
+      </button>
+      <div class="connection-history" id="history-${tokenId}">
+        ${recentHistory
+          .map(
+            (item) => `
+          <div class="connection-history-item">
+            <div>
+              <span class="connection-history-type ${item.type}">${
+              item.type
+            }</span>
+              <span class="connection-history-message">${item.message}</span>
+            </div>
+            <div class="connection-history-time">${new Date(
+              item.timestamp
+            ).toLocaleTimeString()}</div>
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+    </div>
+  `;
 }
 
 // Add event listeners to bot controls
@@ -322,6 +373,20 @@ document.addEventListener("keydown", (e) => {
     tokenInput.blur();
   }
 });
+
+// Toggle connection history visibility
+function toggleConnectionHistory(tokenId) {
+  const historyElement = document.getElementById(`history-${tokenId}`);
+  const toggleButton = historyElement.previousElementSibling;
+
+  if (historyElement.classList.contains("expanded")) {
+    historyElement.classList.remove("expanded");
+    toggleButton.textContent = toggleButton.textContent.replace("Hide", "Show");
+  } else {
+    historyElement.classList.add("expanded");
+    toggleButton.textContent = toggleButton.textContent.replace("Show", "Hide");
+  }
+}
 
 // Focus token input on page load
 window.addEventListener("load", () => {
